@@ -4,7 +4,8 @@ import tw from "twrnc";
 import { TextInput } from "react-native-paper";
 import { useRegisterMutation } from "../redux/api/authApi/authApi";
 
-const RegisterScreen = () => {
+const RegisterScreen = (props) => {
+  const {navigation} = props;
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,10 +19,9 @@ const RegisterScreen = () => {
         email,
         password,
       };
-
-      console.log(registerData);
       register(registerData);
-      alert('success')
+      navigation.navigate("Login")
+ 
     } catch {
       alert("error");
     }
@@ -57,6 +57,13 @@ const RegisterScreen = () => {
             Login
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => { 
+ 
+ navigation.navigate("Login");
+}}>
+    <Text>Already Have an account? Please Login</Text>
+    </TouchableOpacity>
       </View>
     </View>
   );

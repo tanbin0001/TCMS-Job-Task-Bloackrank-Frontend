@@ -4,13 +4,18 @@ import { View, Text, Button, StyleSheet, TouchableOpacity,TextInput } from "reac
 import tw from "twrnc";
  
 import { useLoginMutation } from "../redux/api/authApi/authApi";
+import { verifyToken } from "../utils/verifyToken";
+import { useAppDispatch } from "../redux/hooks";
+import { setUser } from "../redux/features/authSlice";
  
 
-const LoginScreen = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+const LoginScreen = (props) => {
+  const {navigation} = props;
+  const [username, setUsername] = useState("");;
   const [password, setPassword] = useState("");
-  const [text, setText] = useState(""); // Define the state variable for text
+  const [text, setText] = useState(""); 
+  const dispatch = useAppDispatch();
+ 
   
   const [login] = useLoginMutation()
   const handleLogin = async () => {
@@ -18,23 +23,22 @@ const LoginScreen = () => {
   
       const loginData = {
         username,
-        email,
         password,
       };
 
-      console.log(loginData);
+     
+ 
 
-      login(loginData)
-
-      const res = await login(userInfo).unwrap();
+      const res = await login(loginData).unwrap();
       const user = verifyToken(res.data.token);
       dispatch(setUser({ user: user, token: res.data.token }));
-      console.log(user);
+      navigation.navigate("Home")
+ 
 
    
       alert('success')
-    } catch {
-      alert("error");
+    } catch(error) {
+       console.log(error);
     }
   };
 
@@ -47,6 +51,7 @@ const LoginScreen = () => {
         style={tw`border rounded p-2 my-2`}
         placeholder="Username"
         value={username}
+        
         onChangeText={setUsername}
       />
 
@@ -55,6 +60,7 @@ const LoginScreen = () => {
         placeholder="Password"
         secureTextEntry={true}
         value={password}
+        
         onChangeText={setPassword}
       />
         <TouchableOpacity
@@ -65,6 +71,12 @@ const LoginScreen = () => {
             Login
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => { 
+ 
+    navigation.navigate("Register");
+}}>
+       <Text>Don't have an account? Please Register</Text>
+       </TouchableOpacity>
       </View>
     </View>
   );
